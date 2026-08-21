@@ -359,7 +359,7 @@ impl From<convert::Infallible> for Error {
     }
 }
 
-#[cfg(unix)]
+#[cfg(all(unix, not(target_os = "illumos")))]
 impl From<nix::Error> for Error {
     fn from(e: nix::Error) -> Self {
         Error::from(io::Error::from(e))

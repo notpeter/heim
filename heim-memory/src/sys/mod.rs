@@ -14,6 +14,10 @@ cfg_if::cfg_if! {
         mod macos;
 
         pub use self::macos::*;
+    } else if #[cfg(target_os = "illumos")] {
+        mod illumos;
+
+        pub use self::illumos::*;
     } else {
         compile_error!("Unsupported OS!");
     }
