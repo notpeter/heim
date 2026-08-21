@@ -1,5 +1,5 @@
 cfg_if::cfg_if! {
-    if #[cfg(unix)] {
+    if #[cfg(all(unix, not(target_os = "illumos")))] {
         // Since there is a lot of shared into between all UNIX-like systems,
         // aggregating them into a separate module.
         mod unix;
@@ -21,6 +21,10 @@ cfg_if::cfg_if! {
         mod windows;
 
         pub use self::windows::*;
+    } else if #[cfg(target_os = "illumos")] {
+        mod illumos;
+
+        pub use self::illumos::*;
     } else {
         compile_error!("Unsupported OS");
     }

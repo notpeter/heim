@@ -1,7 +1,7 @@
-#[cfg(unix)]
+#[cfg(all(unix, not(target_os = "illumos")))]
 mod unix;
 
-#[cfg(unix)]
+#[cfg(all(unix, not(target_os = "illumos")))]
 pub use self::unix::*;
 
 cfg_if::cfg_if! {
@@ -17,5 +17,9 @@ cfg_if::cfg_if! {
         mod windows;
 
         pub use self::windows::*;
+    } else if #[cfg(target_os = "illumos")] {
+        mod illumos;
+
+        pub use self::illumos::*;
     }
 }

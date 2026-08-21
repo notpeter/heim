@@ -8,7 +8,7 @@ bitflags::bitflags! {
         /// ## Compatibility
         ///
         /// Not available for macOS.
-        #[cfg(not(target_os = "macos"))]
+        #[cfg(not(any(target_os = "macos", target_os = "illumos")))]
         const MANDLOCK = libc::ST_MANDLOCK;
 
         /// Do not update access times; see `mount(2)`.
@@ -16,7 +16,7 @@ bitflags::bitflags! {
         /// ## Compatibility
         ///
         /// Not available for macOS.
-        #[cfg(not(target_os = "macos"))]
+        #[cfg(not(any(target_os = "macos", target_os = "illumos")))]
         const NOATIME = libc::ST_NOATIME;
 
         /// Disallow access to device special files on this filesystem.
@@ -24,7 +24,7 @@ bitflags::bitflags! {
         /// ## Compatibility
         ///
         /// Not available for macOS.
-        #[cfg(not(target_os = "macos"))]
+        #[cfg(not(any(target_os = "macos", target_os = "illumos")))]
         const NODEV = libc::ST_NODEV;
 
         /// Do not update directory access times; see `mount(2)`.
@@ -32,7 +32,7 @@ bitflags::bitflags! {
         /// ## Compatibility
         ///
         /// Not available for macOS.
-        #[cfg(not(target_os = "macos"))]
+        #[cfg(not(any(target_os = "macos", target_os = "illumos")))]
         const NODIRATIME = libc::ST_NODIRATIME;
 
         /// Execution of programs is disallowed on this filesystem.
@@ -40,7 +40,7 @@ bitflags::bitflags! {
         /// ## Compatibility
         ///
         /// Not available for macOS.
-        #[cfg(not(target_os = "macos"))]
+        #[cfg(not(any(target_os = "macos", target_os = "illumos")))]
         const NOEXEC = libc::ST_NOEXEC;
 
         /// The set-user-ID and set-group-ID bits are ignored by `exec(3)`
@@ -55,7 +55,7 @@ bitflags::bitflags! {
         /// ## Compatibility
         ///
         /// Not available for macOS or any `musl` target environment.
-        #[cfg(not(any(target_os = "macos", target_env = "musl")))]
+        #[cfg(not(any(target_os = "macos", target_os = "illumos", target_env = "musl")))]
         const RELATIME = libc::ST_RELATIME;
 
         /// Writes are synced to the filesystem immediately
@@ -64,7 +64,7 @@ bitflags::bitflags! {
         /// ## Compatibility
         ///
         /// Not available for macOS.
-        #[cfg(not(target_os = "macos"))]
+        #[cfg(not(any(target_os = "macos", target_os = "illumos")))]
         const SYNCHRONOUS = libc::ST_SYNCHRONOUS;
     }
 }
