@@ -28,8 +28,6 @@ pub struct IoCounters {
     read_bytes: Information,
     write_bytes: Information,
     busy_time: Time,
-    read_merged_count: u64,
-    write_merged_count: u64,
 }
 
 impl IoCounters {
@@ -86,13 +84,13 @@ impl FromStr for IoCounters {
 
         let name: String = parts.try_from_next()?;
         let read_count = parts.try_parse_next()?;
-        let read_merged_count = parts.try_parse_next()?;
+        let _read_merged_count: u64 = parts.try_parse_next()?;
         let read_bytes = parts
             .try_parse_next()
             .map(|bytes: u64| Information::new::<information::byte>(bytes * DISK_SECTOR_SIZE))?;
         let mut parts = parts.skip(1);
         let write_count = parts.try_parse_next()?;
-        let write_merged_count = parts.try_parse_next()?;
+        let _write_merged_count: u64 = parts.try_parse_next()?;
         let write_bytes = parts
             .try_parse_next()
             .map(|bytes: u64| Information::new::<information::byte>(bytes * DISK_SECTOR_SIZE))?;
@@ -104,10 +102,8 @@ impl FromStr for IoCounters {
         Ok(IoCounters {
             name,
             read_count,
-            read_merged_count,
             read_bytes,
             write_count,
-            write_merged_count,
             write_bytes,
             busy_time,
         })
