@@ -64,6 +64,10 @@ impl fmt::Debug for IoCounters {
 ///
 /// ## Compatibility
 ///
+/// On illumos, device names are kstat names (for example `sd0`). The stream
+/// includes disk, partition, and ZFS pool I/O statistics; these can overlap
+/// and should not be summed as independent devices.
+///
 /// Same to similar tools, on Windows it may be necessary to issue `diskperf -y` command
 /// from `cmd.exe` first in order to enable IO counters.
 ///
@@ -75,6 +79,9 @@ pub async fn io_counters() -> Result<impl Stream<Item = Result<IoCounters>>> {
 }
 
 /// Returns a stream over [IO counters] for each physical disk installed on the system.
+///
+/// On illumos, this selects `disk` class kstats, excluding ZFS pools, zvols,
+/// and loopback file devices. Disks presented by a hypervisor are included.
 ///
 /// [IO counters]: struct.IoCounters.html
 pub async fn io_counters_physical() -> Result<impl Stream<Item = Result<IoCounters>>> {

@@ -67,6 +67,15 @@ pub enum FileSystem {
     /// FUSE (https://en.wikipedia.org/wiki/Filesystem_in_Userspace)
     FuseBlk,
 
+    /// Unix File System, used by illumos and BSD systems.
+    Ufs,
+
+    /// illumos FAT filesystem.
+    Pcfs,
+
+    /// High Sierra / ISO 9660 filesystem on illumos.
+    Hsfs,
+
     // TODO: Extend list
     /// Some unspecified filesystem.
     Other(String),
@@ -110,6 +119,9 @@ impl FileSystem {
             FileSystem::Nilfs => "nilfs",
             FileSystem::Xfs => "xfs",
             FileSystem::Apfs => "apfs",
+            FileSystem::Ufs => "ufs",
+            FileSystem::Pcfs => "pcfs",
+            FileSystem::Hsfs => "hsfs",
             FileSystem::Other(string) => string.as_str(),
         }
     }
@@ -139,6 +151,9 @@ impl FromStr for FileSystem {
             _ if s.eq_ignore_ascii_case("xfs") => Ok(FileSystem::Xfs),
             _ if s.eq_ignore_ascii_case("apfs") => Ok(FileSystem::Apfs),
 
+            _ if s.eq_ignore_ascii_case("ufs") => Ok(FileSystem::Ufs),
+            _ if s.eq_ignore_ascii_case("pcfs") => Ok(FileSystem::Pcfs),
+            _ if s.eq_ignore_ascii_case("hsfs") => Ok(FileSystem::Hsfs),
             _ if s.eq_ignore_ascii_case("fuseblk") => Ok(FileSystem::FuseBlk),
             _ => Ok(FileSystem::Other(s.to_string())),
         }
