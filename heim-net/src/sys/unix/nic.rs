@@ -1,5 +1,3 @@
-use std::net::SocketAddr;
-
 use macaddr::MacAddr;
 use nix::ifaddrs;
 use nix::net::if_::if_nametoindex;
@@ -26,20 +24,20 @@ impl Nic {
         self.0
             .address
             .as_ref()
-            .expect("NIC stream should exclude entries without address")
-            .into()
+            .and_then(address)
+            .expect("NIC stream should exclude entries without supported addresses")
     }
 
     pub fn netmask(&self) -> Option<Address> {
-        self.0.netmask.as_ref().map(Into::into)
+        self.0.netmask.as_ref().and_then(address)
     }
 
     pub fn broadcast(&self) -> Option<Address> {
-        self.0.broadcast.as_ref().map(Into::into)
+        self.0.broadcast.as_ref().and_then(address)
     }
 
     pub fn destination(&self) -> Option<Address> {
-        self.0.destination.as_ref().map(Into::into)
+        self.0.destination.as_ref().and_then(address)
     }
 
     pub fn is_up(&self) -> bool {
@@ -70,7 +68,7 @@ impl Nic {
 pub async fn nic() -> Result<impl Stream<Item = Result<Nic>> + Send + Sync> {
     let iter = ifaddrs::getifaddrs()?
         .filter_map(|addr| {
-            if addr.address.is_some() {
+            if addr.address.as_ref().and_then(address).is_some() {
                 Some(Ok(Nic(addr)))
             } else {
                 None
@@ -81,17 +79,14 @@ pub async fn nic() -> Result<impl Stream<Item = Result<Nic>> + Send + Sync> {
     Ok(stream::iter(iter))
 }
 
-impl From<&socket::SockAddr> for Address {
-    fn from(s: &socket::SockAddr) -> Self {
-        use nix::sys::socket::SockAddr::*;
-
-        match *s {
-            Inet(addr) => match addr.to_std() {
-                SocketAddr::V4(addr) => Address::Inet(addr),
-                SocketAddr::V6(addr) => Address::Inet6(addr),
-            },
-            Link(addr) => Address::Link(MacAddr::from(addr.addr())),
-            other => unimplemented!("Unknown sockaddr: {:?}", other),
-        }
+fn address(s: &socket::SockaddrStorage) -> Option<Address> {
+    if let Some(addr) = s.as_sockaddr_in() {
+        Some(Address::Inet((*addr).into()))
+    } else if let Some(addr) = s.as_sockaddr_in6() {
+        Some(Address::Inet6((*addr).into()))
+    } else {
+        s.as_link_addr()
+            .and_then(|addr| addr.addr())
+            .map(|mac| Address::Link(MacAddr::from(mac)))
     }
 }
