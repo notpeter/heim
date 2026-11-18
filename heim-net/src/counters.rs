@@ -53,6 +53,9 @@ impl IoCounters {
     }
 
     /// Returns packets amount which were dropped while receiving them.
+    ///
+    /// On illumos this counts packets dropped for lack of receive buffers
+    /// (`norcvbuf`), rather than all possible receive drops.
     pub fn drop_recv(&self) -> u64 {
         self.as_ref().drop_recv()
     }
@@ -76,6 +79,9 @@ impl fmt::Debug for IoCounters {
 /// Returns a stream over the [IO counters] for each network interface.
 ///
 /// ## Compatibility
+///
+/// On illumos, counters cover data links exposed by the `link` kstat module.
+/// Loopback is excluded because its kstats do not provide byte or error counts.
 ///
 /// Windows implementation is missing, see [related issue](https://github.com/heim-rs/heim/issues/26)
 ///

@@ -11,3 +11,7 @@ pub mod macos;
 #[cfg(any(target_os = "windows", doc))]
 #[cfg_attr(docsrs, doc(cfg(target_os = "windows")))]
 pub mod windows;
+
+#[cfg(any(target_os = "illumos", doc))]
+#[cfg_attr(docsrs, doc(cfg(target_os = "illumos")))]
+pub mod illumos;
