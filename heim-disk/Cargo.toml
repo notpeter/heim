@@ -33,7 +33,8 @@ mach = "0.3.2"
 core-foundation = "^0.9"
 
 [target.'cfg(target_os = "illumos")'.dependencies]
-kstat-rs = "0.2.5"
+# Use the ks_class fix until it is available in a crates.io release.
+kstat-rs = { git = "https://github.com/oxidecomputer/kstat-rs", rev = "ec6d3afd0542a9c0bd80bcaa7a4348017665334a" }
 
 [dev-dependencies]
 heim-derive = { version = "0.1.0-rc.1", path = "../heim-derive" }
